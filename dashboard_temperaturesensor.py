@@ -22,20 +22,17 @@ def refresh_btn_cmd(temp_widget, did):
     try:
         response = requests.get(url)
         response.raise_for_status()
-        current_temperature = response.json()['value'] #Returnerer måling
-        logging.info(f"Temperature fetched sucessfully: {current_temperature}")
-    except requests.RequestException as e: #skriver ut error melding om mislykket
+        current_temperature = response.json()['value']  # Får den faktiske temperaturen fra skytjenesten
+        logging.info(f"Temperature fetched successfully: {current_temperature}")
+    except requests.RequestException as e:
         logging.error(f"Failed to fetch temperature: {str(e)}")
         current_temperature = "Error"
-    sensor_measurement = SensorMeasurement(init_value="-273.15")
 
-    # TODO: END
-
-    # update the text field in the user interface
-    temp_widget['state'] = 'normal' # to allow text to be changed
-    temp_widget.delete(1.0, 'end')
-    temp_widget.insert(1.0, sensor_measurement.value)
-    temp_widget['state'] = 'disabled'
+        # Oppdater tekstfeltet i brukergrensesnittet med den hentede temperaturen
+    temp_widget['state'] = 'normal'  # Tillater endring av tekst
+    temp_widget.delete(1.0, 'end')  # Fjerner eksisterende tekst
+    temp_widget.insert(1.0, current_temperature)  # Setter inn den nye temperaturen
+    temp_widget['state'] = 'disabled'  # Gjør tekstfeltet skrivebeskyttet igjen
 
 
 def init_temperature_sensor(container, did):
