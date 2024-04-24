@@ -27,23 +27,32 @@ class Actuator:
 
         logging.info(f"Actuator Client {self.did} starting")
 
-        # TODO: START
-        # send request to cloud service with regular intervals and
-        # set state of actuator according to the received response
+        url = f"http://127.0.0.1:8000/smarthouse/actuator/{self.did}/current" #url til skytjeneste
+        while True:
+            try:
+                response = requests.get(url) #get request til sky
+                response.raise_for_status()
+                data = response.json()
+                self.state = ActuatorState(data['state'])
+                logging.info (f"Actuator {self.did} updated state to: {self.state}")
+            except requests.RequestException as e: #skriver ut error melding om mislykket
+                logging.error(f"Error updating actuator {self.did} state: {e}")
+            time.sleep(common.LIGHTBULB_CLIENT_SLEEP_TIME)
+
 
         logging.info(f"Client {self.did} finishing")
 
-        # TODO: END
 
     def run(self):
 
-        pass
-        # TODO: START
+        simulator_thread = threading.Thread(target=self.simulator)
+        client_thread = threading.Thread(target=self.client)
 
-        # start thread simulating physical light bulb
+        simulator_thread.start()
+        client_thread.start()
 
-        # start thread receiving state from the cloud
+        simulator_thread.join()
+        client_thread.join()
 
-        # TODO: END
 
 
