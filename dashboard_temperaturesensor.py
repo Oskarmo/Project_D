@@ -15,7 +15,7 @@ def refresh_btn_cmd(temp_widget, did):
     # TODO: START
     # send request to cloud service to obtain current temperature
 
-    #URL til skytjeneste
+    #definerer URL til skytjeneste
     url = f"http://127.0.0.1:8000/smarthouse/sensor/{did}/current"
 
     #Sender GET request til skytjeneste
